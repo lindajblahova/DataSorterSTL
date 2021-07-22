@@ -9,17 +9,19 @@
 class Menu
 {
 public:
-	Menu(std::shared_ptr<Manager> manager);
+	Menu();
 	~Menu() = default;
 
 	void chooseFilters();
 
+	void chooseSorting();
+
 private:
 	void createFilters();
 
-	void requestName(std::wstring& name);
+	void requestName(std::wstring & name);
 	void requestType(int& type);
-	void requestParentName(std::wstring& name);
+	void requestParentName(std::wstring & parentName);
 	void requestPopulationInterval(int& minPopulation, int& maxPopulation);
 	void requestBuiltUpRateInterval(double& builtUpRateMin, double& builtUpRateMax);
 
@@ -29,6 +31,7 @@ private:
 
 private:
 	std::vector<int> m_filterNumbers;
-	std::shared_ptr<Manager> m_manager;
+	SortBy m_sortBy;
+	std::unique_ptr<Manager> m_manager = std::make_unique<Manager>();
 };
 

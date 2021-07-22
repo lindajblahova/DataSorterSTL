@@ -1,11 +1,13 @@
 #include "Menu.h"
 
-Menu::Menu(std::shared_ptr<Manager> manager) : m_manager(manager)
+Menu::Menu()
 {
+	m_manager->read();
 }
 
 void Menu::chooseFilters()
 {
+	m_manager->read();
 	std::wcout << L"Choose which filters you want to apply" << std::endl;
 	std::wcout << L" 1 - Name Filter" << std::endl;
 	std::wcout << L" 2 - Type Filter" << std::endl;
@@ -17,7 +19,7 @@ void Menu::chooseFilters()
 	addSeparator();
 
 	std::wstring line;
-	
+
 	while (true)
 	{
 		std::wcout << L"Filter number: ";
@@ -30,6 +32,41 @@ void Menu::chooseFilters()
 	}
 
 	createFilters();
+}
+
+void Menu::chooseSorting()
+{
+	std::wstring line;
+	bool ascendingOrder = true;
+	SortBy sortBy = SortBy::Name;
+
+	std::wcout << L"Choose a sorting criterion: ";
+	std::wcout << L" 1 - Sort by name" << std::endl;
+	std::wcout << L" 2 - Sort by population" << std::endl;
+	std::wcout << L" 3 - Sort by built up rate" << std::endl;
+	std::getline(std::wcin, line);
+
+	switch (std::stoi(line))
+	{
+	case 1:
+		sortBy = SortBy::Name;
+		break;
+	case 2:
+		sortBy = SortBy::Population;
+		break;
+	case 3:
+		sortBy = SortBy::BuiltUpRate;
+		break;
+	default:
+		break;
+	}
+
+	std::wcout << L"Choose a sorting order: ";
+	std::wcout << L" 1 - Ascending" << std::endl;
+	std::wcout << L" 2 - Descending" << std::endl;
+	std::getline(std::wcin, line);
+	ascendingOrder = std::stoi(line) == 2 ? false : true; // 2 descending otherwise ascending
+	m_manager->sortTerritorialUnits(ascendingOrder, sortBy);
 }
 
 void Menu::createFilters()
@@ -112,11 +149,9 @@ void Menu::requestBuiltUpRateInterval(double& builtUpRateMin, double& builtUpRat
 void Menu::doFiltration()
 {
 	m_manager->filterTerritorialUnits();
-	m_manager->writeFilteredTerritorialUnitsAllData();
 }
 
 inline void Menu::addSeparator()
 {
 	std::wcout << L"___________________________________________________________________________________________" << std::endl << std::endl;
 }
-

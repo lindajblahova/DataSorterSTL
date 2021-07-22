@@ -1,8 +1,4 @@
-#include "Manager.h"
-
-Manager::Manager()
-{
-}
+﻿#include "Manager.h"
 
 void Manager::read()
 {
@@ -97,6 +93,45 @@ std::list<std::shared_ptr<ITerritorialUnit>> Manager::getTerritorialUnits()
 	return m_territorialUnits;
 }
 
+void Manager::writeTerritorialUnitsAllData(std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite)
+{
+
+	std::unique_ptr<Criterion> criteria;
+	for (auto const& i : listToWrite) {
+		
+		std::shared_ptr<ITerritorialUnit> territorialUnitTMP = i;
+		changeColor(11);
+		while (territorialUnitTMP->getParent() != nullptr)
+		{
+			territorialUnitTMP = territorialUnitTMP->getParent();
+			std::wcout << (territorialUnitTMP->getType() == TypeTU::District ? L" | District: "  : 
+				(territorialUnitTMP->getType() == TypeTU::Region ? L" | Region: " : L" | State: "))
+				<< criteria->name(territorialUnitTMP) ;
+		}
+		std::wcout << std::endl;
+
+		changeColor(14);
+		std::wcout << L" | Territorial unit: " << criteria->name(i);
+		changeColor(6);
+		std::wcout << L" | Population: " << criteria->population(i);
+		changeColor(4);
+		std::wcout << L" | Preproductive: " << criteria->preProductive(i);
+		changeColor(2);
+		std::wcout << L" | Productive: " << criteria->productive(i);
+		changeColor(3);
+		std::wcout << L" | PostProductive: " << criteria->postProductive(i);
+		changeColor(8);
+		wprintf(L" | Total Area: %.2f km²", (criteria->totalArea(i) / 1000.0));        // TODO inak ? 
+		changeColor(15);
+		wprintf(L" | Built up area: %.2f km²", (criteria->builtUpArea(i) / 1000.0));
+		changeColor(10);
+		wprintf(L" | Built up rate: %.2f", criteria->builtUpRate(i));
+		std::wcout << L"%" << std::endl << std::endl;
+	}
+	changeColor(7);
+}
+
+
 void Manager::addFilterName(const std::wstring& name)
 {
 	m_allFilters.push_back([name, this](const std::shared_ptr<ITerritorialUnit>& teritorialUnit) {
@@ -104,8 +139,22 @@ void Manager::addFilterName(const std::wstring& name)
 		});
 }
 
-void Manager::addFilterType(const TypeTU type)
+void Manager::addFilterType(const int typeNumber)
 {
+	TypeTU type{ TypeTU::None };
+	switch (typeNumber)
+	{
+	case 1:
+		type = TypeTU::Commune;
+	case 2:
+		type = TypeTU::District;
+	case 3:
+		type = TypeTU::Region;
+	case 4:
+		type = TypeTU::State;
+	default:
+		break;
+	}
 	m_allFilters.push_back([type, this](const std::shared_ptr<ITerritorialUnit>& teritorialUnit) {
 		return m_filter->hasType(teritorialUnit, type);
 		});
@@ -143,15 +192,62 @@ void Manager::addFilterBuiltUpRate(const double minInterval, const double maxInt
 		});
 }
 
-
-Manager::~Manager()
+void Manager::filterTerritorialUnits()
 {
+	std::copy_if(m_territorialUnits.begin(), m_territorialUnits.end(), std::back_inserter(m_chosenTerritorialUnits),
+		[this](std::shared_ptr<ITerritorialUnit>& territorialUnit)
+		{
+			return meetsRequirements(territorialUnit);
+		});
+	writeTerritorialUnitsAllData(m_chosenTerritorialUnits);
 }
 
+void Manager::sortTerritorialUnitsByName()
+{
+	m_territorialUnits.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
+	{return m_sort->byName(territorialUnit1, territorialUnit2); });
+}
 
+void Manager::sortTerritorialUnitsByPopulation()
+{
+	m_territorialUnits.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
+	{return m_sort->byPopulation(territorialUnit1, territorialUnit2); });
+}
+
+void Manager::sortTerritorialUnitsByBuiltUpRate()
+{
+	m_territorialUnits.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
+		{return m_sort->byBuiltUpRate(territorialUnit1, territorialUnit2); });
+}
+
+void Manager::sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy )
+{
+	m_sort->setOrder(inAscendingOrder);
+
+	switch (sortBy)
+	{
+	case SortBy::Name:
+		sortTerritorialUnitsByName();
+		break;
+	case SortBy::Population:
+		sortTerritorialUnitsByPopulation();
+		break;
+	case SortBy::BuiltUpRate:
+		sortTerritorialUnitsByBuiltUpRate();
+		break;
+	default:
+		break;
+	}
+	writeTerritorialUnitsAllData(m_territorialUnits);
+}
 
 bool Manager::meetsRequirements(std::shared_ptr<ITerritorialUnit>& territorialUnit)
 {
 	return std::all_of(m_allFilters.begin(), m_allFilters.end(),
 		[this, territorialUnit](const auto& filterFunction) {return filterFunction(territorialUnit); });
+}
+
+inline void Manager::changeColor(int desiredColor)
+{
+	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), desiredColor);
 }

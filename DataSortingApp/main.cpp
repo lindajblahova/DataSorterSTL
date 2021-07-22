@@ -1,12 +1,13 @@
 #include <memory>
-#include  "Manager/Manager.h"
+#include "Menu/Menu.h"
 
 int main() 
 {
-	std::unique_ptr<Manager> man = std::make_unique<Manager>();
+	std::unique_ptr<Menu> menu = std::make_unique<Menu>();
 
-	man->read();
+	//menu->chooseFilters();
 
+	menu->chooseSorting();
 	return 0;
 }
 
