@@ -1,0 +1,19 @@
+#pragma once
+
+#include "../Criterion/Criterion.h"
+
+class Sort
+{
+public:
+    Sort();
+    ~Sort();
+
+    void setOrder(bool isAscending);
+    bool byName(const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2);
+    bool byPopulation(const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2);
+    bool byBuiltUpRate(const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2);
+
+private:
+    std::unique_ptr<Criterion> m_criterion = std::make_unique<Criterion>();
+    bool m_ascendingOrder = true;
+};

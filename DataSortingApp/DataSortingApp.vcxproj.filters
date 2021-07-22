@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Filters">
+      <UniqueIdentifier>{1f200bff-ea4a-48e0-a60c-0d735bb98841}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Criteria">
+      <UniqueIdentifier>{bd96e571-5e4e-4e65-ba65-1ce3210578d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="App">
+      <UniqueIdentifier>{786e37ac-a01e-468d-8e90-42ad8304f2dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TerritorialUnit">
+      <UniqueIdentifier>{118b1355-4233-480e-b188-1d8c3fcb061c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{a01b58a9-81e5-414a-a827-8e18d4b4fe30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sort">
+      <UniqueIdentifier>{f954288a-2057-4d6e-bc29-38cd1fb55651}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Criterion\Criterion.cpp">
+      <Filter>Criteria</Filter>
+    </ClCompile>
+    <ClCompile Include="Filter\Filter.cpp">
+      <Filter>Filters</Filter>
+    </ClCompile>
+    <ClCompile Include="Manager\Manager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="Sort\Sort.cpp">
+      <Filter>Sort</Filter>
+    </ClCompile>
+    <ClCompile Include="TerritorialUnit\TerritorialUnit.cpp">
+      <Filter>TerritorialUnit</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Criterion\Criterion.h">
+      <Filter>Criteria</Filter>
+    </ClInclude>
+    <ClInclude Include="Filter\Filter.h">
+      <Filter>Filters</Filter>
+    </ClInclude>
+    <ClInclude Include="Manager\Manager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="Sort\Sort.h">
+      <Filter>Sort</Filter>
+    </ClInclude>
+    <ClInclude Include="TerritorialUnit\ITerritorialUnit.h">
+      <Filter>TerritorialUnit</Filter>
+    </ClInclude>
+    <ClInclude Include="TerritorialUnit\TerritorialUnit.h">
+      <Filter>TerritorialUnit</Filter>
+    </ClInclude>
+    <ClInclude Include="TerritorialUnit\TypeTU.h">
+      <Filter>TerritorialUnit</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
