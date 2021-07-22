@@ -5,6 +5,7 @@
 #include <iostream>
 #include <vector>
 #include "../Manager/Manager.h"
+#include "Tasks.h"
 
 class Menu
 {
@@ -12,11 +13,13 @@ public:
 	Menu();
 	~Menu() = default;
 
-	void chooseFilters();
-
-	void chooseSorting();
+	void chooseTasks();
 
 private:
+
+	void chooseFilters();
+	void chooseSorting();
+
 	void createFilters();
 
 	void requestName(std::wstring & name);
@@ -24,14 +27,14 @@ private:
 	void requestParentName(std::wstring & parentName);
 	void requestPopulationInterval(int& minPopulation, int& maxPopulation);
 	void requestBuiltUpRateInterval(double& builtUpRateMin, double& builtUpRateMax);
-
-	void doFiltration();
-
+	void requestSortingOrder(bool& ascendingOrder);
+	
 	inline void addSeparator();
 
 private:
 	std::vector<int> m_filterNumbers;
-	SortBy m_sortBy;
+	SortBy m_sortBy = SortBy::Name;
+	Tasks m_taskToPerform = Tasks::Filter;
 	std::unique_ptr<Manager> m_manager = std::make_unique<Manager>();
 };
 

@@ -95,7 +95,6 @@ std::list<std::shared_ptr<ITerritorialUnit>> Manager::getTerritorialUnits()
 
 void Manager::writeTerritorialUnitsAllData(std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite)
 {
-
 	std::unique_ptr<Criterion> criteria;
 	for (auto const& i : listToWrite) {
 		
@@ -131,6 +130,36 @@ void Manager::writeTerritorialUnitsAllData(std::list<std::shared_ptr<ITerritoria
 	changeColor(7);
 }
 
+void Manager::writeTerritorialUnitsSomeData(std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite, SortBy sortBy)
+{
+	std::unique_ptr<Criterion> criteria;
+	for (auto const& i : listToWrite) {
+
+		changeColor(14);
+		std::wcout << L" | Territorial unit: " << criteria->name(i);
+
+		switch (sortBy)
+		{
+		case SortBy::Name:
+			std::wcout <<  std::endl;
+			break;
+		case SortBy::Population:
+			changeColor(6);
+			std::wcout << L" | Population: " << criteria->population(i) << std::endl;
+			break;
+		case SortBy::BuiltUpRate:
+			changeColor(10);
+			wprintf(L" | Built up rate: %.2f", criteria->builtUpRate(i));
+			std::wcout << L"%" << std::endl << std::endl;
+			break;
+		default:
+			break;
+		}
+	
+	}
+	changeColor(7);
+}
+
 
 void Manager::addFilterName(const std::wstring& name)
 {
@@ -139,19 +168,23 @@ void Manager::addFilterName(const std::wstring& name)
 		});
 }
 
-void Manager::addFilterType(const int typeNumber)
+void Manager::addFilterType(int typeNumber)
 {
 	TypeTU type{ TypeTU::None };
 	switch (typeNumber)
 	{
 	case 1:
 		type = TypeTU::Commune;
+		break;
 	case 2:
 		type = TypeTU::District;
+		break;
 	case 3:
 		type = TypeTU::Region;
+		break;
 	case 4:
 		type = TypeTU::State;
+		break;
 	default:
 		break;
 	}
@@ -178,67 +211,49 @@ void Manager::addFilterParent(const std::wstring& nameOfParent)
 	}
 }
 
-void Manager::addFilterPopulation(const int minInterval, const int maxInterval)
+void Manager::addFilterPopulation(int minInterval, int maxInterval)
 {
 	m_allFilters.push_back([minInterval, maxInterval, this](const std::shared_ptr<ITerritorialUnit>& teritorialUnit) {
 		return m_filter->hasPopulation(teritorialUnit, minInterval, maxInterval);
 		});
 }
 
-void Manager::addFilterBuiltUpRate(const double minInterval, const double maxInterval)
+void Manager::addFilterBuiltUpRate(double minInterval, double maxInterval)
 {
 	m_allFilters.push_back([minInterval, maxInterval, this](const std::shared_ptr<ITerritorialUnit>& teritorialUnit) {
 		return m_filter->hasBuiltUpRate(teritorialUnit, minInterval, maxInterval);
 		});
 }
 
-void Manager::filterTerritorialUnits()
+void Manager::filterTerritorialUnits(Tasks taskToPerform)
 {
 	std::copy_if(m_territorialUnits.begin(), m_territorialUnits.end(), std::back_inserter(m_chosenTerritorialUnits),
 		[this](std::shared_ptr<ITerritorialUnit>& territorialUnit)
 		{
 			return meetsRequirements(territorialUnit);
 		});
-	writeTerritorialUnitsAllData(m_chosenTerritorialUnits);
+	if (taskToPerform == Tasks::Filter)
+	{
+		writeTerritorialUnitsAllData(m_chosenTerritorialUnits);
+	}
 }
 
-void Manager::sortTerritorialUnitsByName()
-{
-	m_territorialUnits.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
-	{return m_sort->byName(territorialUnit1, territorialUnit2); });
-}
-
-void Manager::sortTerritorialUnitsByPopulation()
-{
-	m_territorialUnits.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
-	{return m_sort->byPopulation(territorialUnit1, territorialUnit2); });
-}
-
-void Manager::sortTerritorialUnitsByBuiltUpRate()
-{
-	m_territorialUnits.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
-		{return m_sort->byBuiltUpRate(territorialUnit1, territorialUnit2); });
-}
-
-void Manager::sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy )
+void Manager::sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy, Tasks taskToPerform)
 {
 	m_sort->setOrder(inAscendingOrder);
 
-	switch (sortBy)
-	{
-	case SortBy::Name:
-		sortTerritorialUnitsByName();
-		break;
-	case SortBy::Population:
-		sortTerritorialUnitsByPopulation();
-		break;
-	case SortBy::BuiltUpRate:
-		sortTerritorialUnitsByBuiltUpRate();
-		break;
-	default:
-		break;
-	}
-	writeTerritorialUnitsAllData(m_territorialUnits);
+	std::list<std::shared_ptr<ITerritorialUnit>>& listToSort = taskToPerform == Tasks::Sort ? m_territorialUnits : m_chosenTerritorialUnits;
+
+	listToSort.sort([this, sortBy](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
+		{
+			return sortBy == SortBy::Name ?
+				m_sort->byName(territorialUnit1, territorialUnit2) :
+				sortBy == SortBy::Population ?
+				m_sort->byPopulation(territorialUnit1, territorialUnit2) :
+				m_sort->byBuiltUpRate(territorialUnit1, territorialUnit2);
+		});
+
+	writeTerritorialUnitsSomeData(listToSort, sortBy);
 }
 
 bool Manager::meetsRequirements(std::shared_ptr<ITerritorialUnit>& territorialUnit)

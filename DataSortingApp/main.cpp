@@ -5,9 +5,8 @@ int main()
 {
 	std::unique_ptr<Menu> menu = std::make_unique<Menu>();
 
-	//menu->chooseFilters();
+	menu->chooseTasks();
 
-	menu->chooseSorting();
 	return 0;
 }
 

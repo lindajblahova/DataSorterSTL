@@ -5,9 +5,42 @@ Menu::Menu()
 	m_manager->read();
 }
 
+void Menu::chooseTasks()
+{
+	int taskToPerform = { 0 };
+	std::wcout << L"Choose which task do you want to perform>" << std::endl;
+	std::wcout << L" 1 - Filter territorial units by criteria" << std::endl;
+	std::wcout << L" 2 - Sort territorial units by criterion" << std::endl;
+	std::wcout << L" 3 - Filter and Sort filtered territorial units" << std::endl;
+	std::wcout << L" 0 - Close application" << std::endl;
+
+	std::wcout << L" Task: " ;
+	std::wcin >> taskToPerform;
+
+	addSeparator();
+
+	switch (taskToPerform)
+	{
+	case 1:
+		m_taskToPerform = Tasks::Filter;
+		chooseFilters();
+		break;
+	case 2:
+		m_taskToPerform = Tasks::Sort;
+		chooseSorting();
+		break;
+	case 3:
+		m_taskToPerform = Tasks::Both;
+		chooseFilters();
+		chooseSorting();
+		break;
+	default:
+		break;
+	}
+}
+
 void Menu::chooseFilters()
 {
-	m_manager->read();
 	std::wcout << L"Choose which filters you want to apply" << std::endl;
 	std::wcout << L" 1 - Name Filter" << std::endl;
 	std::wcout << L" 2 - Type Filter" << std::endl;
@@ -18,17 +51,17 @@ void Menu::chooseFilters()
 
 	addSeparator();
 
-	std::wstring line;
+	int filterInput{ 1 };
 
 	while (true)
 	{
 		std::wcout << L"Filter number: ";
-		std::getline(std::wcin, line);
-		if (line == L"0")
+		std::wcin >> filterInput;
+		if (filterInput == 0)
 		{
 			break;
 		}
-		m_filterNumbers.push_back(std::stoi(line));
+		m_filterNumbers.push_back(filterInput);
 	}
 
 	createFilters();
@@ -36,17 +69,17 @@ void Menu::chooseFilters()
 
 void Menu::chooseSorting()
 {
-	std::wstring line;
+	int sortByInput{ 1 };
 	bool ascendingOrder = true;
 	SortBy sortBy = SortBy::Name;
 
-	std::wcout << L"Choose a sorting criterion: ";
+	std::wcout << L"Choose a sorting criterion: " << std::endl;
 	std::wcout << L" 1 - Sort by name" << std::endl;
 	std::wcout << L" 2 - Sort by population" << std::endl;
 	std::wcout << L" 3 - Sort by built up rate" << std::endl;
-	std::getline(std::wcin, line);
+	std::wcin >> sortByInput;
 
-	switch (std::stoi(line))
+	switch (sortByInput)
 	{
 	case 1:
 		sortBy = SortBy::Name;
@@ -61,12 +94,8 @@ void Menu::chooseSorting()
 		break;
 	}
 
-	std::wcout << L"Choose a sorting order: ";
-	std::wcout << L" 1 - Ascending" << std::endl;
-	std::wcout << L" 2 - Descending" << std::endl;
-	std::getline(std::wcin, line);
-	ascendingOrder = std::stoi(line) == 2 ? false : true; // 2 descending otherwise ascending
-	m_manager->sortTerritorialUnits(ascendingOrder, sortBy);
+	requestSortingOrder(ascendingOrder);
+	m_manager->sortTerritorialUnits(ascendingOrder, sortBy, m_taskToPerform);
 }
 
 void Menu::createFilters()
@@ -107,7 +136,7 @@ void Menu::createFilters()
 	}
 
 	addSeparator();
-	doFiltration();
+	m_manager->filterTerritorialUnits(m_taskToPerform);
 }
 
 void Menu::requestName(std::wstring& name)
@@ -125,6 +154,7 @@ void Menu::requestType(int& type)
 void Menu::requestParentName(std::wstring& parentName)
 {
 	std::wcout << L"Enter name of parent territorial unit: ";
+	std::getline(std::wcin, parentName);
 	std::getline(std::wcin, parentName);
 }
 
@@ -146,9 +176,14 @@ void Menu::requestBuiltUpRateInterval(double& builtUpRateMin, double& builtUpRat
 	std::wcin >> builtUpRateMax;
 }
 
-void Menu::doFiltration()
+void Menu::requestSortingOrder(bool& ascendingOrder)
 {
-	m_manager->filterTerritorialUnits();
+	int sortOrder{ 0 };
+	std::wcout << L"Choose a sorting order: " << std::endl;
+	std::wcout << L" 1 - Ascending" << std::endl;
+	std::wcout << L" 2 - Descending" << std::endl;
+	std::wcin >> sortOrder;
+	ascendingOrder = sortOrder == 2 ? false : true; // 2 descending otherwise ascending
 }
 
 inline void Menu::addSeparator()

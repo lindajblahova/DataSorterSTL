@@ -14,7 +14,8 @@
 #include "../TerritorialUnit/TerritorialUnit.h"
 #include "../Filter/Filter.h"
 #include "../Sort/Sort.h"
-#include "../SortBy.h"
+#include "../Sort/SortBy.h"
+#include "../Menu/Tasks.h"
 
 class Manager
 {
@@ -31,18 +32,15 @@ public:
 	void addFilterPopulation(const int minInterval, const int maxInterval);
 	void addFilterBuiltUpRate(const double minInterval, const double maxInterval);
 
-	void filterTerritorialUnits();
+	void filterTerritorialUnits(Tasks taskToPerform);
 
-	void sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy);
+	void sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy, Tasks taskToPerform);
 
 private:
 	bool meetsRequirements(std::shared_ptr<ITerritorialUnit>& territorialUnit);
 
-	void sortTerritorialUnitsByName();
-	void sortTerritorialUnitsByPopulation();
-	void sortTerritorialUnitsByBuiltUpRate();
-
 	void writeTerritorialUnitsAllData(std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite);
+	void writeTerritorialUnitsSomeData(std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite, SortBy sortBy);
 
 	inline void changeColor(int desiredColor);
 
