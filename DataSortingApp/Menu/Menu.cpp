@@ -12,7 +12,7 @@ void Menu::chooseTasks()
 	std::wcout << L" 1 - Filter territorial units by criteria" << std::endl;
 	std::wcout << L" 2 - Sort territorial units by criterion" << std::endl;
 	std::wcout << L" 3 - Filter and Sort filtered territorial units" << std::endl;
-	std::wcout << L" 0 - Close application" << std::endl;
+	std::wcout << L" Any other number - Close application" << std::endl;
 
 	std::wcout << L" Task: " ;
 	std::wcin >> taskToPerform;
@@ -35,8 +35,13 @@ void Menu::chooseTasks()
 		chooseSorting();
 		break;
 	default:
-		break;
+		return;
 	}
+
+	addSeparator();
+	std::wcout << L"Press enter to continue." << std::endl;
+	std::wcin.get();
+	chooseTasks();
 }
 
 void Menu::chooseFilters()
@@ -77,6 +82,9 @@ void Menu::chooseSorting()
 	std::wcout << L" 1 - Sort by name" << std::endl;
 	std::wcout << L" 2 - Sort by population" << std::endl;
 	std::wcout << L" 3 - Sort by built up rate" << std::endl;
+	addSeparator();
+
+	std::wcout << L" Sort by: " << std::endl;
 	std::wcin >> sortByInput;
 
 	switch (sortByInput)
@@ -143,6 +151,7 @@ void Menu::requestName(std::wstring& name)
 {
 	std::wcout << L"Enter name of territorial unit: ";
 	std::getline(std::wcin, name);
+	std::getline(std::wcin, name);
 }
 
 void Menu::requestType(int& type)
@@ -154,7 +163,6 @@ void Menu::requestType(int& type)
 void Menu::requestParentName(std::wstring& parentName)
 {
 	std::wcout << L"Enter name of parent territorial unit: ";
-	std::getline(std::wcin, parentName);
 	std::getline(std::wcin, parentName);
 }
 
@@ -178,11 +186,14 @@ void Menu::requestBuiltUpRateInterval(double& builtUpRateMin, double& builtUpRat
 
 void Menu::requestSortingOrder(bool& ascendingOrder)
 {
+	addSeparator();
 	int sortOrder{ 0 };
 	std::wcout << L"Choose a sorting order: " << std::endl;
 	std::wcout << L" 1 - Ascending" << std::endl;
 	std::wcout << L" 2 - Descending" << std::endl;
+	std::wcout << L"Sorting order: " << std::endl;
 	std::wcin >> sortOrder;
+	addSeparator();
 	ascendingOrder = sortOrder == 2 ? false : true; // 2 descending otherwise ascending
 }
 
