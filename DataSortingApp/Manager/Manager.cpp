@@ -1,4 +1,14 @@
 ﻿#include "Manager.h"
+#include "../Comparator/ComparatorByName.h"
+#include "../Comparator/ComparatorByPopulation.h"
+#include "../Comparator/ComparatorByBuiltUpRate.h"
+
+#include <fcntl.h>
+#include <io.h>
+#include <fstream>
+#include <iostream>
+#include <algorithm>
+#include <Windows.h>
 
 void Manager::read()
 {
@@ -16,7 +26,7 @@ void Manager::read()
 	dataCommune.imbue(std::locale("sk_SK.UTF8"));
 	dataParent.imbue(std::locale("sk_SK.UTF8"));
 
-	std::shared_ptr<ITerritorialUnit> stateTU = std::make_shared<TerritorialUnit>(L"Slovensko", TypeTU::State, nullptr, 0, 0, 0, 0.0, 0.0);
+	std::shared_ptr<ITerritorialUnit> stateTU = std::make_shared<TerritorialUnit>(L"Slovensko", TerritorialUnitType::State, nullptr, 0, 0, 0, 0.0, 0.0);
 	m_territorialUnits.push_back(stateTU);
 
 	std::shared_ptr<ITerritorialUnit> regionTU;
@@ -62,7 +72,7 @@ void Manager::read()
 			}
 			else
 			{
-				regionTU = std::make_shared<TerritorialUnit>(region, TypeTU::Region, stateTU, preProd, prod, postProd, totalArea, bulidUpArea);
+				regionTU = std::make_shared<TerritorialUnit>(region, TerritorialUnitType::Region, stateTU, preProd, prod, postProd, totalArea, bulidUpArea);
 				m_territorialUnits.push_back(regionTU);
 			}
 			
@@ -75,11 +85,11 @@ void Manager::read()
 			}
 			else
 			{
-				districtTU = std::make_shared<TerritorialUnit>(district, TypeTU::District, regionTU, preProd, prod, postProd, totalArea, bulidUpArea);
+				districtTU = std::make_shared<TerritorialUnit>(district, TerritorialUnitType::District, regionTU, preProd, prod, postProd, totalArea, bulidUpArea);
 				m_territorialUnits.push_back(districtTU);
 			}
 			
-			communeTU = std::make_shared<TerritorialUnit>(name, TypeTU::Commune, districtTU, preProd, prod, postProd, totalArea, bulidUpArea);
+			communeTU = std::make_shared<TerritorialUnit>(name, TerritorialUnitType::Commune, districtTU, preProd, prod, postProd, totalArea, bulidUpArea);
 			m_territorialUnits.push_back(communeTU);
 		}
 		dataCommune.close();
@@ -90,7 +100,7 @@ void Manager::read()
 
 void Manager::writeTerritorialUnitsAllData(const std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite)
 {
-	std::unique_ptr<Criterion> criteria;
+	std::unique_ptr<ICriterion> criteria = std::make_unique<Criterion>();
 	for (auto const& i : listToWrite) {
 		
 		std::shared_ptr<ITerritorialUnit> territorialUnitTMP = i;
@@ -98,8 +108,8 @@ void Manager::writeTerritorialUnitsAllData(const std::list<std::shared_ptr<ITerr
 		while (territorialUnitTMP->getParent() != nullptr)
 		{
 			territorialUnitTMP = territorialUnitTMP->getParent();
-			std::wcout << (territorialUnitTMP->getType() == TypeTU::District ? L" | District: "  : 
-				(territorialUnitTMP->getType() == TypeTU::Region ? L" | Region: " : L" | State: "))
+			std::wcout << (territorialUnitTMP->getType() == TerritorialUnitType::District ? L" | District: "  : 
+				(territorialUnitTMP->getType() == TerritorialUnitType::Region ? L" | Region: " : L" | State: "))
 				<< criteria->name(territorialUnitTMP) ;
 		}
 		std::wcout << std::endl;
@@ -127,7 +137,7 @@ void Manager::writeTerritorialUnitsAllData(const std::list<std::shared_ptr<ITerr
 
 void Manager::writeTerritorialUnitsSomeData(const std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite, SortBy sortBy)
 {
-	std::unique_ptr<Criterion> criteria;
+	std::unique_ptr<ICriterion> criteria = std::make_unique<Criterion>();
 	for (auto const& i : listToWrite) {
 
 		changeColor(14);
@@ -136,7 +146,7 @@ void Manager::writeTerritorialUnitsSomeData(const std::list<std::shared_ptr<ITer
 		switch (sortBy)
 		{
 		case SortBy::Name:
-			std::wcout <<  std::endl;
+			std::wcout << std::endl;
 			break;
 		case SortBy::Population:
 			changeColor(6);
@@ -165,20 +175,20 @@ void Manager::addFilterName(const std::wstring& name)
 
 void Manager::addFilterType(int typeNumber)
 {
-	TypeTU type = TypeTU::None;
+	TerritorialUnitType type = TerritorialUnitType::None;
 	switch (typeNumber)
 	{
 	case 1:
-		type = TypeTU::Commune;
+		type = TerritorialUnitType::Commune;
 		break;
 	case 2:
-		type = TypeTU::District;
+		type = TerritorialUnitType::District;
 		break;
 	case 3:
-		type = TypeTU::Region;
+		type = TerritorialUnitType::Region;
 		break;
 	case 4:
-		type = TypeTU::State;
+		type = TerritorialUnitType::State;
 		break;
 	default:
 		break;
@@ -238,17 +248,27 @@ void Manager::filterTerritorialUnits(Tasks taskToPerform)
 
 void Manager::sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy, Tasks taskToPerform)
 {
-	m_sort->setOrder(inAscendingOrder);
+
 
 	std::list<std::shared_ptr<ITerritorialUnit>>& listToSort = taskToPerform == Tasks::Sort ? m_territorialUnits : m_chosenTerritorialUnits;
 
-	listToSort.sort([this, sortBy](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
-		{
-			return sortBy == SortBy::Name ?
-				m_sort->byName(territorialUnit1, territorialUnit2) :
-				sortBy == SortBy::Population ?
-				m_sort->byPopulation(territorialUnit1, territorialUnit2) :
-				m_sort->byBuiltUpRate(territorialUnit1, territorialUnit2);
+	switch (sortBy)
+	{
+	case SortBy::Name:
+		m_comparator = std::make_unique<ComparatorByName>();
+		break;
+	case SortBy::Population:
+		m_comparator = std::make_unique<ComparatorByPopulation>();
+		break;
+	case SortBy::BuiltUpRate:
+		m_comparator = std::make_unique<ComparatorByBuiltUpRate>();
+		break;
+	}
+	m_comparator->setOrder(inAscendingOrder);
+
+	listToSort.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
+		{ 
+			return m_comparator->compareTerritorialUnits(territorialUnit1, territorialUnit2);
 		});
 
 	writeTerritorialUnitsSomeData(listToSort, sortBy);

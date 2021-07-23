@@ -1,8 +1,5 @@
 #pragma once
 
-#include <memory>
-#include <string>
-#include <iostream>
 #include <vector>
 #include "../Manager/Manager.h"
 #include "Tasks.h"
