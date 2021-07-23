@@ -7,7 +7,7 @@ Menu::Menu()
 
 void Menu::chooseTasks()
 {
-	int taskToPerform = { 0 };
+	int taskToPerform{ 0 };
 	std::wcout << L"Choose which task do you want to perform>" << std::endl;
 	std::wcout << L" 1 - Filter territorial units by criteria" << std::endl;
 	std::wcout << L" 2 - Sort territorial units by criterion" << std::endl;
@@ -46,6 +46,10 @@ void Menu::chooseTasks()
 
 void Menu::chooseFilters()
 {
+	int filterInput{ 1 };
+
+	m_filterNumbers.clear();
+
 	std::wcout << L"Choose which filters you want to apply" << std::endl;
 	std::wcout << L" 1 - Name Filter" << std::endl;
 	std::wcout << L" 2 - Type Filter" << std::endl;
@@ -54,13 +58,9 @@ void Menu::chooseFilters()
 	std::wcout << L" 5 - Built up rate Filter" << std::endl;
 	std::wcout << L" 0 - Continue" << std::endl;
 
-	addSeparator();
-
-	int filterInput{ 1 };
-
 	while (true)
 	{
-		std::wcout << L"Filter number: ";
+		std::wcout << L" Filter number: ";
 		std::wcin >> filterInput;
 		if (filterInput == 0)
 		{
@@ -75,17 +75,17 @@ void Menu::chooseFilters()
 void Menu::chooseSorting()
 {
 	int sortByInput{ 1 };
-	bool ascendingOrder = true;
+	bool ascendingOrder{ true };
 	SortBy sortBy = SortBy::Name;
 
 	std::wcout << L"Choose a sorting criterion: " << std::endl;
 	std::wcout << L" 1 - Sort by name" << std::endl;
 	std::wcout << L" 2 - Sort by population" << std::endl;
 	std::wcout << L" 3 - Sort by built up rate" << std::endl;
-	addSeparator();
 
-	std::wcout << L" Sort by: " << std::endl;
+	std::wcout << L" Sort by: " ;
 	std::wcin >> sortByInput;
+	addSeparator();
 
 	switch (sortByInput)
 	{
@@ -109,7 +109,8 @@ void Menu::chooseSorting()
 void Menu::createFilters()
 {
 	std::wstring name, parentName;
-	int typeNumber{ 0 }, minPopulation{ 0 }, maxPopulation{ 0 };
+	int typeNumber{ 0 };
+	unsigned int minPopulation{ 0 }, maxPopulation{ 0 };
 	double builtUpRateMin{ 0.0 }, builtUpRateMax{ 0.0 };
 
 	for (int i = 0; i < m_filterNumbers.size(); i++)
@@ -156,7 +157,7 @@ void Menu::requestName(std::wstring& name)
 
 void Menu::requestType(int& type)
 {
-	std::wcout << L"Enter type (1 - Commune, 2 - District, 3 - Region, 4 - State) of territorial unit: " << std::endl;
+	std::wcout << L"Enter type (1 - Commune, 2 - District, 3 - Region, 4 - State) of territorial unit: ";
 	std::wcin >> type;
 }
 
@@ -164,9 +165,10 @@ void Menu::requestParentName(std::wstring& parentName)
 {
 	std::wcout << L"Enter name of parent territorial unit: ";
 	std::getline(std::wcin, parentName);
+	std::getline(std::wcin, parentName);
 }
 
-void Menu::requestPopulationInterval(int& minPopulation, int& maxPopulation)
+void Menu::requestPopulationInterval(unsigned int& minPopulation, unsigned int& maxPopulation)
 {
 	std::wcout << L"Enter minimal population of territorial unit: ";
 	std::wcin >> minPopulation;
@@ -186,15 +188,18 @@ void Menu::requestBuiltUpRateInterval(double& builtUpRateMin, double& builtUpRat
 
 void Menu::requestSortingOrder(bool& ascendingOrder)
 {
-	addSeparator();
 	int sortOrder{ 0 };
+
 	std::wcout << L"Choose a sorting order: " << std::endl;
 	std::wcout << L" 1 - Ascending" << std::endl;
 	std::wcout << L" 2 - Descending" << std::endl;
-	std::wcout << L"Sorting order: " << std::endl;
+	std::wcout << L" Sorting order: " ;
+	
 	std::wcin >> sortOrder;
+
 	addSeparator();
-	ascendingOrder = sortOrder == 2 ? false : true; // 2 descending otherwise ascending
+
+	ascendingOrder = sortOrder == 2 ? false : true; // 2 = descending otherwise ascending
 }
 
 inline void Menu::addSeparator()

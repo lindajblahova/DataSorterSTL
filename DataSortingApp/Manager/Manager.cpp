@@ -3,8 +3,8 @@
 void Manager::read()
 {
 	std::wstring name, commune, district, region;
-	unsigned int preProd, prod, postProd;
-	double totalArea, bulidUpArea;
+	unsigned int preProd{ 0 }, prod{ 0 }, postProd{0};
+	double totalArea{ 0.0 }, bulidUpArea{ 0.0 };
 
 	std::wifstream dataCommune("data/file.txt");
 
@@ -88,12 +88,7 @@ void Manager::read()
 	
 }
 
-std::list<std::shared_ptr<ITerritorialUnit>> Manager::getTerritorialUnits()
-{
-	return m_territorialUnits;
-}
-
-void Manager::writeTerritorialUnitsAllData(std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite)
+void Manager::writeTerritorialUnitsAllData(const std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite)
 {
 	std::unique_ptr<Criterion> criteria;
 	for (auto const& i : listToWrite) {
@@ -130,7 +125,7 @@ void Manager::writeTerritorialUnitsAllData(std::list<std::shared_ptr<ITerritoria
 	changeColor(7);
 }
 
-void Manager::writeTerritorialUnitsSomeData(std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite, SortBy sortBy)
+void Manager::writeTerritorialUnitsSomeData(const std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite, SortBy sortBy)
 {
 	std::unique_ptr<Criterion> criteria;
 	for (auto const& i : listToWrite) {
@@ -170,7 +165,7 @@ void Manager::addFilterName(const std::wstring& name)
 
 void Manager::addFilterType(int typeNumber)
 {
-	TypeTU type{ TypeTU::None };
+	TypeTU type = TypeTU::None;
 	switch (typeNumber)
 	{
 	case 1:
@@ -211,7 +206,7 @@ void Manager::addFilterParent(const std::wstring& nameOfParent)
 	}
 }
 
-void Manager::addFilterPopulation(int minInterval, int maxInterval)
+void Manager::addFilterPopulation(unsigned int minInterval, unsigned int maxInterval)
 {
 	m_allFilters.push_back([minInterval, maxInterval, this](const std::shared_ptr<ITerritorialUnit>& teritorialUnit) {
 		return m_filter->hasPopulation(teritorialUnit, minInterval, maxInterval);
@@ -235,7 +230,10 @@ void Manager::filterTerritorialUnits(Tasks taskToPerform)
 	if (taskToPerform == Tasks::Filter)
 	{
 		writeTerritorialUnitsAllData(m_chosenTerritorialUnits);
+		m_chosenTerritorialUnits.clear();
 	}
+
+	m_allFilters.clear();
 }
 
 void Manager::sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy, Tasks taskToPerform)
@@ -254,9 +252,10 @@ void Manager::sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy, Tasks t
 		});
 
 	writeTerritorialUnitsSomeData(listToSort, sortBy);
+	m_chosenTerritorialUnits.clear();
 }
 
-bool Manager::meetsRequirements(std::shared_ptr<ITerritorialUnit>& territorialUnit)
+bool Manager::meetsRequirements(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
 {
 	return std::all_of(m_allFilters.begin(), m_allFilters.end(),
 		[this, territorialUnit](const auto& filterFunction) {return filterFunction(territorialUnit); });

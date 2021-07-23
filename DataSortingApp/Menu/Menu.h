@@ -22,10 +22,10 @@ private:
 
 	void createFilters();
 
-	void requestName(std::wstring & name);
+	void requestName(std::wstring& name);
 	void requestType(int& type);
-	void requestParentName(std::wstring & parentName);
-	void requestPopulationInterval(int& minPopulation, int& maxPopulation);
+	void requestParentName(std::wstring& parentName);
+	void requestPopulationInterval(unsigned int& minPopulation, unsigned int& maxPopulation);
 	void requestBuiltUpRateInterval(double& builtUpRateMin, double& builtUpRateMax);
 	void requestSortingOrder(bool& ascendingOrder);
 	

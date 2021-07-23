@@ -1,13 +1,5 @@
 #include "Sort.h"
 
-Sort::Sort() 
-{
-}
-
-Sort::~Sort()
-{
-}
-
 void Sort::setOrder(bool isAscending)
 {
 	m_ascendingOrder = isAscending;

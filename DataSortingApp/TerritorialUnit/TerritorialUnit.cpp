@@ -1,6 +1,7 @@
 #include "TerritorialUnit.h"
 
-TerritorialUnit::TerritorialUnit(const std::wstring& name, TypeTU type, const std::shared_ptr<ITerritorialUnit>& parent, int preProductive, int productive, int postProductive, double totalArea, double buildUpArea)
+TerritorialUnit::TerritorialUnit(const std::wstring& name, TypeTU type, const std::shared_ptr<ITerritorialUnit>& parent, unsigned int preProductive, 
+	unsigned int productive, unsigned int postProductive, double totalArea, double buildUpArea)
 	: m_name(name), m_type(type), m_parent(parent), m_preProductive(preProductive), m_productive(productive), m_postProductive(postProductive),
 	m_totalArea(totalArea), m_builtUpArea(buildUpArea)
 {
@@ -21,17 +22,17 @@ std::shared_ptr<ITerritorialUnit> TerritorialUnit::getParent() const
 	return m_parent;
 }
 
-int TerritorialUnit::getPreProductive() const
+unsigned int TerritorialUnit::getPreProductive() const
 {
 	return m_preProductive;
 }
 
-int TerritorialUnit::getProductive() const
+unsigned int TerritorialUnit::getProductive() const
 {
 	return m_productive;
 }
 
-int TerritorialUnit::getPostProductive() const
+unsigned int TerritorialUnit::getPostProductive() const
 {
 	return m_postProductive;
 }
@@ -46,7 +47,7 @@ double TerritorialUnit::getBuiltUpArea() const
 	return m_builtUpArea;
 }
 
-void TerritorialUnit::addValues(int preProductive, int productive, int postProductive, double totalArea, double builtUpArea)
+void TerritorialUnit::addValues(unsigned int preProductive, unsigned int productive, unsigned int postProductive, double totalArea, double builtUpArea)
 {
 	m_preProductive += preProductive;
 	m_productive += productive;
