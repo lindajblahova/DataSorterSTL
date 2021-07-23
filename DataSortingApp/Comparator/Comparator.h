@@ -10,7 +10,7 @@ public:
     ~Comparator() = default;
 
     inline void setOrder(bool isAscending) override;
-    virtual bool compareTerritorialUnits(const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
+    virtual bool compare(const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
         const override = 0;
 
 protected:

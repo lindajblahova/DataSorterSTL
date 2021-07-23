@@ -13,10 +13,16 @@
     <Filter Include="TerritorialUnit">
       <UniqueIdentifier>{118b1355-4233-480e-b188-1d8c3fcb061c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Menu">
+      <UniqueIdentifier>{48df9ed3-1a80-4e62-9e3d-e70b2814fad5}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Manager">
       <UniqueIdentifier>{a01b58a9-81e5-414a-a827-8e18d4b4fe30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sort">
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{968cfbf4-0f8a-46a7-9e59-58167bfb60a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Comparator">
       <UniqueIdentifier>{f954288a-2057-4d6e-bc29-38cd1fb55651}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -31,11 +37,11 @@
     <ClCompile Include="Manager\Manager.cpp">
       <Filter>Manager</Filter>
     </ClCompile>
-    <ClCompile Include="Sort\Sort.cpp">
-      <Filter>Sort</Filter>
-    </ClCompile>
     <ClCompile Include="TerritorialUnit\TerritorialUnit.cpp">
       <Filter>TerritorialUnit</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu\Menu.cpp">
+      <Filter>Menu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -48,17 +54,44 @@
     <ClInclude Include="Manager\Manager.h">
       <Filter>Manager</Filter>
     </ClInclude>
-    <ClInclude Include="Sort\Sort.h">
-      <Filter>Sort</Filter>
-    </ClInclude>
-    <ClInclude Include="TerritorialUnit\ITerritorialUnit.h">
-      <Filter>TerritorialUnit</Filter>
-    </ClInclude>
     <ClInclude Include="TerritorialUnit\TerritorialUnit.h">
       <Filter>TerritorialUnit</Filter>
     </ClInclude>
-    <ClInclude Include="TerritorialUnit\TypeTU.h">
+    <ClInclude Include="TerritorialUnit\TerritorialUnitType.h">
       <Filter>TerritorialUnit</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu\Menu.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu\Tasks.h">
+      <Filter>Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Interfaces\IFilter.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Interfaces\ITerritorialUnit.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Interfaces\ICriterion.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Comparator\Comparator.h">
+      <Filter>Comparator</Filter>
+    </ClInclude>
+    <ClInclude Include="Interfaces\IComparator.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="Comparator\ComparatorByName.h">
+      <Filter>Comparator</Filter>
+    </ClInclude>
+    <ClInclude Include="Comparator\ComparatorByPopulation.h">
+      <Filter>Comparator</Filter>
+    </ClInclude>
+    <ClInclude Include="Comparator\ComparatorByBuiltUpRate.h">
+      <Filter>Comparator</Filter>
+    </ClInclude>
+    <ClInclude Include="Comparator\SortBy.h">
+      <Filter>Comparator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
