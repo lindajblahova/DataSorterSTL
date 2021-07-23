@@ -249,7 +249,6 @@ void Manager::filterTerritorialUnits(Tasks taskToPerform)
 void Manager::sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy, Tasks taskToPerform)
 {
 
-
 	std::list<std::shared_ptr<ITerritorialUnit>>& listToSort = taskToPerform == Tasks::Sort ? m_territorialUnits : m_chosenTerritorialUnits;
 
 	switch (sortBy)
@@ -268,7 +267,7 @@ void Manager::sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy, Tasks t
 
 	listToSort.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
 		{ 
-			return m_comparator->compareTerritorialUnits(territorialUnit1, territorialUnit2);
+			return m_comparator->compare(territorialUnit1, territorialUnit2);
 		});
 
 	writeTerritorialUnitsSomeData(listToSort, sortBy);

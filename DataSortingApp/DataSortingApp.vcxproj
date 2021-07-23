@@ -143,17 +143,26 @@
     <ClCompile Include="Filter\Filter.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Manager\Manager.cpp" />
-    <ClCompile Include="Sort\Sort.cpp" />
+    <ClCompile Include="Menu\Menu.cpp" />
     <ClCompile Include="TerritorialUnit\TerritorialUnit.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Comparator\Comparator.h" />
+    <ClInclude Include="Comparator\ComparatorByBuiltUpRate.h" />
+    <ClInclude Include="Comparator\ComparatorByName.h" />
+    <ClInclude Include="Comparator\ComparatorByPopulation.h" />
+    <ClInclude Include="Comparator\SortBy.h" />
     <ClInclude Include="Criterion\Criterion.h" />
     <ClInclude Include="Filter\Filter.h" />
+    <ClInclude Include="Interfaces\IComparator.h" />
+    <ClInclude Include="Interfaces\ICriterion.h" />
+    <ClInclude Include="Interfaces\IFilter.h" />
+    <ClInclude Include="Interfaces\ITerritorialUnit.h" />
     <ClInclude Include="Manager\Manager.h" />
-    <ClInclude Include="Sort\Sort.h" />
-    <ClInclude Include="TerritorialUnit\ITerritorialUnit.h" />
+    <ClInclude Include="Menu\Menu.h" />
+    <ClInclude Include="Menu\Tasks.h" />
     <ClInclude Include="TerritorialUnit\TerritorialUnit.h" />
-    <ClInclude Include="TerritorialUnit\TypeTU.h" />
+    <ClInclude Include="TerritorialUnit\TerritorialUnitType.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
