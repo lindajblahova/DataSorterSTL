@@ -1,14 +1,6 @@
 #include "Filter.h"
 #include <iostream>
 
-Filter::Filter() : m_criterion(std::make_unique<Criterion>())
-{
-}
-
-Filter::~Filter()
-{
-}
-
 bool Filter::hasParent(const std::shared_ptr<ITerritorialUnit>& territorialUnit, const std::shared_ptr<ITerritorialUnit>& parent)
 {
     return m_criterion->hasParent(territorialUnit, parent);
@@ -24,9 +16,9 @@ bool Filter::hasType(const std::shared_ptr<ITerritorialUnit>& territorialUnit, c
     return m_criterion->type(territorialUnit) == type;
 }
 
-bool Filter::hasPopulation(const std::shared_ptr<ITerritorialUnit>& territorialUnit, int minInterval, int maxInterval)
+bool Filter::hasPopulation(const std::shared_ptr<ITerritorialUnit>& territorialUnit, unsigned int minInterval, unsigned int maxInterval)
 {
-    int population = m_criterion->population(territorialUnit);
+    unsigned int population = m_criterion->population(territorialUnit);
     return population >= minInterval && population <= maxInterval;
 }
 

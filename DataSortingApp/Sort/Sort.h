@@ -1,12 +1,13 @@
 #pragma once
 
 #include "../Criterion/Criterion.h"
+#include "SortBy.h"
 
 class Sort
 {
 public:
-    Sort();
-    ~Sort();
+    Sort() = default;
+    ~Sort() = default;
 
     void setOrder(bool isAscending);
     bool byName(const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2);
@@ -15,5 +16,5 @@ public:
 
 private:
     std::unique_ptr<Criterion> m_criterion = std::make_unique<Criterion>();
-    bool m_ascendingOrder = true;
+    bool m_ascendingOrder{ true };
 };
