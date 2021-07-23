@@ -1,21 +1,17 @@
 #pragma once
 
-#include <string>
-#include <memory>
-#include "TypeTU.h"
-#include "ITerritorialUnit.h"
-#include <list>
+#include "../Interfaces/ITerritorialUnit.h"
 
 class TerritorialUnit : public ITerritorialUnit
 {
 public:
 	TerritorialUnit() = delete;
-	TerritorialUnit(const std::wstring& name, TypeTU type,const std::shared_ptr<ITerritorialUnit>& parent, unsigned int preProductive, 
+	TerritorialUnit(const std::wstring& name, TerritorialUnitType type,const std::shared_ptr<ITerritorialUnit>& parent, unsigned int preProductive, 
 		unsigned int productive, unsigned int postProductive, double totalArea, double buildUpArea);
 	~TerritorialUnit();
 
 	std::wstring getName() const override;
-	TypeTU getType() const override;
+	TerritorialUnitType getType() const override;
 	std::shared_ptr<ITerritorialUnit> getParent() const override;
 	unsigned int getPreProductive() const override;
 	unsigned int getProductive() const override;
@@ -27,7 +23,7 @@ public:
 
 private:
 	std::wstring m_name;
-	TypeTU m_type { TypeTU::None };
+	TerritorialUnitType m_type { TerritorialUnitType::None };
 	std::shared_ptr<ITerritorialUnit> m_parent;
 	unsigned int m_preProductive { 0 };
 	unsigned int m_productive {0};

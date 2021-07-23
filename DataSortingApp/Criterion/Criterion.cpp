@@ -1,29 +1,29 @@
 #include "Criterion.h"
 
-std::wstring Criterion::name(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
+std::wstring Criterion::name(const std::shared_ptr<ITerritorialUnit>& territorialUnit) const
 {
 	return territorialUnit->getName();
 }
 
-TypeTU Criterion::type(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
+TerritorialUnitType Criterion::type(const std::shared_ptr<ITerritorialUnit>& territorialUnit) const
 {
 	return territorialUnit->getType();
 }
 
-bool Criterion::hasParent(const std::shared_ptr<ITerritorialUnit>& territorialUnit, const std::shared_ptr<ITerritorialUnit>& parent)
+bool Criterion::hasParent(const std::shared_ptr<ITerritorialUnit>& territorialUnit, const std::shared_ptr<ITerritorialUnit>& parentTerritorialUnit) const
 {
-    if (territorialUnit->getType() == TypeTU::Commune &&
-        (territorialUnit->getParent() == parent || territorialUnit->getParent()->getParent() == parent))
+    if (territorialUnit->getType() == TerritorialUnitType::Commune &&
+        (territorialUnit->getParent() == parentTerritorialUnit || territorialUnit->getParent()->getParent() == parentTerritorialUnit))
     {
         return true;
     }
 
-    if (territorialUnit->getType() == TypeTU::District && territorialUnit->getParent() == parent)
+    if (territorialUnit->getType() == TerritorialUnitType::District && territorialUnit->getParent() == parentTerritorialUnit)
     {
         return true;
     }
 
-    if (parent != nullptr && parent->getType() == TypeTU::State)
+    if (parentTerritorialUnit != nullptr && parentTerritorialUnit->getType() == TerritorialUnitType::State)
     {
         return true;
     }
@@ -31,37 +31,37 @@ bool Criterion::hasParent(const std::shared_ptr<ITerritorialUnit>& territorialUn
     return false;
 }
 
-int Criterion::preProductive(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
+int Criterion::preProductive(const std::shared_ptr<ITerritorialUnit>& territorialUnit) const
 {
 	return territorialUnit->getPreProductive();
 }
 
-int Criterion::productive(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
+int Criterion::productive(const std::shared_ptr<ITerritorialUnit>& territorialUnit) const
 {
 	return territorialUnit->getProductive();
 }
 
-int Criterion::postProductive(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
+int Criterion::postProductive(const std::shared_ptr<ITerritorialUnit>& territorialUnit) const
 {
 	return territorialUnit->getPostProductive();
 }
 
-int Criterion::population(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
+int Criterion::population(const std::shared_ptr<ITerritorialUnit>& territorialUnit) const
 {
 	return (territorialUnit->getPreProductive() + territorialUnit->getProductive() + territorialUnit->getPostProductive());
 }
 
-double Criterion::totalArea(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
+double Criterion::totalArea(const std::shared_ptr<ITerritorialUnit>& territorialUnit) const
 {
 	return territorialUnit->getTotalArea();
 }
 
-double Criterion::builtUpArea(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
+double Criterion::builtUpArea(const std::shared_ptr<ITerritorialUnit>& territorialUnit) const
 {
 	return territorialUnit->getBuiltUpArea();
 }
 
-double Criterion::builtUpRate(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
+double Criterion::builtUpRate(const std::shared_ptr<ITerritorialUnit>& territorialUnit) const
 {
 	return (double)((territorialUnit->getBuiltUpArea() / territorialUnit->getTotalArea()) * 100.0);
 }

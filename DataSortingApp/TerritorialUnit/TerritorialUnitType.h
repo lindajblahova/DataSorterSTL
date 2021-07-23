@@ -1,6 +1,6 @@
 #pragma once
 
-enum class TypeTU {
+enum class TerritorialUnitType {
 	None = 0,
 	Commune,		// obec
 	District,		// okres

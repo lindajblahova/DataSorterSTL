@@ -1,20 +1,13 @@
 #pragma once
 
-#include <fcntl.h>
-#include <io.h>
-#include <string>
-#include <fstream>
-#include <iostream>
-#include <algorithm>
-#include <list>
-#include <functional>
-
-#include <Windows.h>
-
 #include "../TerritorialUnit/TerritorialUnit.h"
 #include "../Filter/Filter.h"
-#include "../Sort/Sort.h"
+#include "../Comparator/Comparator.h"
 #include "../Menu/Tasks.h"
+#include "../Comparator/SortBy.h"
+
+#include <list>
+#include <functional>
 
 class Manager
 {
@@ -49,8 +42,8 @@ private:
 	std::list<std::shared_ptr<ITerritorialUnit>> m_territorialUnits;
 	std::list<std::shared_ptr<ITerritorialUnit>> m_chosenTerritorialUnits;
 	std::list<FilterFunction> m_allFilters;
-	std::unique_ptr<Filter> m_filter = std::make_unique<Filter>();
-	std::unique_ptr<Sort> m_sort = std::make_unique<Sort>();
+	std::unique_ptr<IFilter> m_filter = std::make_unique<Filter>();
+	std::unique_ptr<IComparator> m_comparator;
 
 
 
