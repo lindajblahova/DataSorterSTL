@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Interfaces/ITerritorialUnit.h"
+#include "../TerritorialUnit/TerritorialUnit.h"
 
 class IComparator
 {

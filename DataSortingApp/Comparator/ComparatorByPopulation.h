@@ -16,6 +16,6 @@ inline bool ComparatorByPopulation::compare(const std::shared_ptr<ITerritorialUn
     const std::shared_ptr<ITerritorialUnit>& territorialUnit2) const
 {
     return m_ascendingOrder ?
-        this->m_criterion->population(territorialUnit1) < this->m_criterion->population(territorialUnit2) :
-        this->m_criterion->population(territorialUnit1) > this->m_criterion->population(territorialUnit2);
+        m_criterion->population(territorialUnit1) < m_criterion->population(territorialUnit2) :
+        m_criterion->population(territorialUnit1) > m_criterion->population(territorialUnit2);
 }

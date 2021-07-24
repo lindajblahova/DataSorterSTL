@@ -10,8 +10,6 @@ public:
     ~Comparator() = default;
 
     inline void setOrder(bool isAscending) override;
-    virtual bool compare(const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
-        const override = 0;
 
 protected:
     std::unique_ptr<ICriterion> m_criterion = std::make_unique<Criterion>();
