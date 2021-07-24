@@ -16,6 +16,6 @@ inline bool ComparatorByBuiltUpRate::compare(const std::shared_ptr<ITerritorialU
     const std::shared_ptr<ITerritorialUnit>& territorialUnit2) const
 {
     return m_ascendingOrder ?
-        this->m_criterion->builtUpRate(territorialUnit1) < this->m_criterion->builtUpRate(territorialUnit2) :
-        this->m_criterion->builtUpRate(territorialUnit1) > this->m_criterion->builtUpRate(territorialUnit2);
+        m_criterion->builtUpRate(territorialUnit1) < m_criterion->builtUpRate(territorialUnit2) :
+        m_criterion->builtUpRate(territorialUnit1) > m_criterion->builtUpRate(territorialUnit2);
 }
