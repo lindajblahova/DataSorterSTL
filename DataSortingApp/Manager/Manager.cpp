@@ -163,6 +163,22 @@ void Manager::writeTerritorialUnitsSomeData(const std::list<std::shared_ptr<ITer
 	
 	}
 	changeColor(7);
+
+}
+
+void Manager::clearChosenFilters()
+{
+	m_allFilters.clear();
+}
+
+void Manager::clearChosenTerritorialUnits()
+{
+	m_chosenTerritorialUnits.clear();
+}
+
+void Manager::clearAllTerritorialUnits()
+{
+	m_territorialUnits.clear();
 }
 
 
@@ -175,24 +191,7 @@ void Manager::addFilterName(const std::wstring& name)
 
 void Manager::addFilterType(int typeNumber)
 {
-	TerritorialUnitType type = TerritorialUnitType::None;
-	switch (typeNumber)
-	{
-	case 1:
-		type = TerritorialUnitType::Commune;
-		break;
-	case 2:
-		type = TerritorialUnitType::District;
-		break;
-	case 3:
-		type = TerritorialUnitType::Region;
-		break;
-	case 4:
-		type = TerritorialUnitType::State;
-		break;
-	default:
-		break;
-	}
+	TerritorialUnitType type = mapToTerritorialUnitType(typeNumber);
 	m_allFilters.push_back([type, this](const std::shared_ptr<ITerritorialUnit>& teritorialUnit) {
 		return m_filter->hasType(teritorialUnit, type);
 		});
@@ -237,47 +236,70 @@ void Manager::filterTerritorialUnits(Tasks taskToPerform)
 		{
 			return meetsRequirements(territorialUnit);
 		});
-	if (taskToPerform == Tasks::Filter)
-	{
-		writeTerritorialUnitsAllData(m_chosenTerritorialUnits);
-		m_chosenTerritorialUnits.clear();
-	}
-
-	m_allFilters.clear();
 }
 
-void Manager::sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy, Tasks taskToPerform)
+void Manager::setSortParameters(bool inAscendingOrder, SortBy sortBy)
 {
+	m_comparator = createComparator(sortBy);
 
-	std::list<std::shared_ptr<ITerritorialUnit>>& listToSort = taskToPerform == Tasks::Sort ? m_territorialUnits : m_chosenTerritorialUnits;
+	m_comparator->setOrder(inAscendingOrder);
+}
 
-	switch (sortBy)
+std::list<std::shared_ptr<ITerritorialUnit>>& Manager::chooseTerritorialUnitsToSort(Tasks taskToPerform)
+{
+	switch (taskToPerform)
 	{
-	case SortBy::Name:
-		m_comparator = std::make_unique<ComparatorByName>();
+	case Tasks::Sort:
+		return m_territorialUnits;
 		break;
-	case SortBy::Population:
-		m_comparator = std::make_unique<ComparatorByPopulation>();
-		break;
-	case SortBy::BuiltUpRate:
-		m_comparator = std::make_unique<ComparatorByBuiltUpRate>();
+	default:
+		return m_chosenTerritorialUnits;
 		break;
 	}
-	m_comparator->setOrder(inAscendingOrder);
+}
 
+void Manager::sortTerritorialUnits(std::list<std::shared_ptr<ITerritorialUnit>>& listToSort)
+{
 	listToSort.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
 		{ 
 			return m_comparator->compare(territorialUnit1, territorialUnit2);
 		});
-
-	writeTerritorialUnitsSomeData(listToSort, sortBy);
-	m_chosenTerritorialUnits.clear();
 }
 
 bool Manager::meetsRequirements(const std::shared_ptr<ITerritorialUnit>& territorialUnit)
 {
 	return std::all_of(m_allFilters.begin(), m_allFilters.end(),
 		[this, territorialUnit](const auto& filterFunction) {return filterFunction(territorialUnit); });
+}
+
+TerritorialUnitType Manager::mapToTerritorialUnitType(int type)
+{
+	switch (type)
+	{
+	case 1:
+		return TerritorialUnitType::Commune;
+	case 2:
+		return TerritorialUnitType::District;
+	case 3:
+		return TerritorialUnitType::Region;
+	case 4:
+		return TerritorialUnitType::State;
+	default:
+		return TerritorialUnitType::None;
+	}
+}
+
+std::unique_ptr<IComparator> Manager::createComparator(SortBy sortBy)
+{
+	switch (sortBy)
+	{
+	case SortBy::Name:
+		return std::make_unique<ComparatorByName>();
+	case SortBy::Population:
+		return std::make_unique<ComparatorByPopulation>();
+	case SortBy::BuiltUpRate:
+		return std::make_unique<ComparatorByBuiltUpRate>();
+	}
 }
 
 inline void Manager::changeColor(int desiredColor)

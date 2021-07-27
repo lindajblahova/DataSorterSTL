@@ -5,7 +5,7 @@
 class TerritorialUnit : public ITerritorialUnit
 {
 public:
-	TerritorialUnit() = delete;
+	TerritorialUnit() = default;
 	TerritorialUnit(const std::wstring& name, TerritorialUnitType type,const std::shared_ptr<ITerritorialUnit>& parent, unsigned int preProductive, 
 		unsigned int productive, unsigned int postProductive, double totalArea, double buildUpArea);
 	~TerritorialUnit();

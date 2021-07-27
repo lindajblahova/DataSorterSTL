@@ -27,6 +27,10 @@ bool Criterion::hasParent(const std::shared_ptr<ITerritorialUnit>& territorialUn
     {
         return true;
     }
+    if (parentTerritorialUnit == nullptr && territorialUnit->getType() == TerritorialUnitType::State)
+    {
+        return true;
+    }
 
     return false;
 }

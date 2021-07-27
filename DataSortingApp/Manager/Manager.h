@@ -25,13 +25,22 @@ public:
 
 	void filterTerritorialUnits(Tasks taskToPerform);
 
-	void sortTerritorialUnits(bool inAscendingOrder, SortBy sortBy, Tasks taskToPerform);
-
-private:
-	bool meetsRequirements(const std::shared_ptr<ITerritorialUnit>& territorialUnit);
+	void setSortParameters(bool inAscendingOrder, SortBy sortBy);
+	std::list<std::shared_ptr<ITerritorialUnit>>& chooseTerritorialUnitsToSort(Tasks taskToPerform);
+	void sortTerritorialUnits(std::list<std::shared_ptr<ITerritorialUnit>>& listToSort);
 
 	void writeTerritorialUnitsAllData(const std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite);
 	void writeTerritorialUnitsSomeData(const std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite, SortBy sortBy);
+
+	void clearChosenFilters();
+	void clearChosenTerritorialUnits();
+	void clearAllTerritorialUnits();
+
+private:
+	bool meetsRequirements(const std::shared_ptr<ITerritorialUnit>& territorialUnit);
+	TerritorialUnitType mapToTerritorialUnitType(int type);
+
+	std::unique_ptr<IComparator> createComparator(SortBy sortBy);
 
 	inline void changeColor(int desiredColor);
 

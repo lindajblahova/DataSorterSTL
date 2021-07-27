@@ -29,6 +29,9 @@ private:
 	inline void addSeparator();
 
 private:
+	SortBy mapToSortBy(int sortByInput);
+
+private:
 	std::vector<int> m_filterNumbers;
 	SortBy m_sortBy = SortBy::Name;
 	Tasks m_taskToPerform = Tasks::Filter;

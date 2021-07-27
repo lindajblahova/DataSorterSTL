@@ -88,23 +88,17 @@ void Menu::chooseSorting()
 	std::wcin >> sortByInput;
 	addSeparator();
 
-	switch (sortByInput)
-	{
-	case 1:
-		sortBy = SortBy::Name;
-		break;
-	case 2:
-		sortBy = SortBy::Population;
-		break;
-	case 3:
-		sortBy = SortBy::BuiltUpRate;
-		break;
-	default:
-		break;
-	}
+	mapToSortBy(sortByInput);
 
 	requestSortingOrder(ascendingOrder);
-	m_manager->sortTerritorialUnits(ascendingOrder, sortBy, m_taskToPerform);
+
+	m_manager->setSortParameters(ascendingOrder, sortBy);
+	std::list<std::shared_ptr<ITerritorialUnit>> listToSort = m_manager->chooseTerritorialUnitsToSort(m_taskToPerform);
+	m_manager->sortTerritorialUnits(listToSort);
+
+	m_manager->writeTerritorialUnitsSomeData(listToSort, sortBy);
+
+	m_manager->clearChosenTerritorialUnits();
 }
 
 void Menu::createFilters()
@@ -147,6 +141,14 @@ void Menu::createFilters()
 
 	addSeparator();
 	m_manager->filterTerritorialUnits(m_taskToPerform);
+
+	if (m_taskToPerform == Tasks::Filter)
+	{
+		std::list<std::shared_ptr<ITerritorialUnit>> listToSort = m_manager->chooseTerritorialUnitsToSort(m_taskToPerform);
+		m_manager->writeTerritorialUnitsAllData(listToSort);
+		m_manager->clearChosenTerritorialUnits();
+	}
+	m_manager->clearChosenFilters();
 }
 
 void Menu::requestName(std::wstring& name)
@@ -206,4 +208,19 @@ void Menu::requestSortingOrder(bool& ascendingOrder)
 inline void Menu::addSeparator()
 {
 	std::wcout << L"___________________________________________________________________________________________" << std::endl << std::endl;
+}
+
+SortBy Menu::mapToSortBy(int sortByInput)
+{
+	switch (sortByInput)
+	{
+	case 1:
+		return SortBy::Name;
+	case 2:
+		return SortBy::Population;
+	case 3:
+		return SortBy::BuiltUpRate;
+	default:
+		return SortBy::None;
+	}
 }
