@@ -2,7 +2,8 @@
 
 enum class Tasks
 {
-	Filter = 0,
+	None = 0,
+	Filter,
 	Sort,
 	Both
 };

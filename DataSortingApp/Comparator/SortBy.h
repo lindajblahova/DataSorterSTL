@@ -1,7 +1,7 @@
 enum class SortBy
 {
-	Name = 0,
+	None = 0,
+	Name,
 	Population,
-	BuiltUpRate,
-	None
+	BuiltUpRate
 };

@@ -15,22 +15,21 @@ public:
 	Manager() = default;
 	~Manager() = default;
 
-	void read();
+	void readTerritorialUnitsFromFiles();
 	
 	void addFilterName(const std::wstring& name);
 	void addFilterType(int type);
 	void addFilterParent(const std::wstring& nameOfParent);
 	void addFilterPopulation(unsigned int minInterval, unsigned int maxInterval);
 	void addFilterBuiltUpRate(double minInterval, double maxInterval);
-
 	void filterTerritorialUnits(Tasks taskToPerform);
 
 	void setSortParameters(bool inAscendingOrder, SortBy sortBy);
-	std::list<std::shared_ptr<ITerritorialUnit>>& chooseTerritorialUnitsToSort(Tasks taskToPerform);
-	void sortTerritorialUnits(std::list<std::shared_ptr<ITerritorialUnit>>& listToSort);
+	std::list<std::shared_ptr<ITerritorialUnit>>& chooseTerritorialUnitsToUse(Tasks taskToPerform);
+	void sortTerritorialUnits(std::list<std::shared_ptr<ITerritorialUnit>>& territorialUnitsToSort);
 
-	void writeTerritorialUnitsAllData(const std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite);
-	void writeTerritorialUnitsSomeData(const std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite, SortBy sortBy);
+	void writeTerritorialUnitsAllData(const std::list<std::shared_ptr<ITerritorialUnit>>& territorialUnitsToWrite);
+	void writeTerritorialUnitsSomeData(const std::list<std::shared_ptr<ITerritorialUnit>>& territorialUnitsToWrite, SortBy sortBy);
 
 	void clearChosenFilters();
 	void clearChosenTerritorialUnits();

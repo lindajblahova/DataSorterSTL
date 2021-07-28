@@ -10,14 +10,18 @@ public:
 	Menu();
 	~Menu() = default;
 
-	void chooseTasks();
+	Tasks chooseTaskToPerform();
+
+	void chooseFiltersToUse();
+	void createFilters();
+	void performFiltration();
+	void writeFilteredResults();
+
+	SortBy chooseSortingProperties();
+	void performSorting(SortBy sortBy);
+	void writeSortedResults(SortBy sortBy);
 
 private:
-
-	void chooseFilters();
-	void chooseSorting();
-
-	void createFilters();
 
 	void requestName(std::wstring& name);
 	void requestType(int& type);
@@ -25,16 +29,22 @@ private:
 	void requestPopulationInterval(unsigned int& minPopulation, unsigned int& maxPopulation);
 	void requestBuiltUpRateInterval(double& builtUpRateMin, double& builtUpRateMax);
 	void requestSortingOrder(bool& ascendingOrder);
+
+	SortBy mapToSortBy(int sortByInput);
+	Tasks mapToTasks(int taskToPerform);
+
+	std::list<std::shared_ptr<ITerritorialUnit>>& getTerritorialUnits();
+
+	void writeTasksMenu();
+	void writeFilterMenu();
+	void writeSortMenu();
 	
 	inline void addSeparator();
 
 private:
-	SortBy mapToSortBy(int sortByInput);
-
-private:
 	std::vector<int> m_filterNumbers;
-	SortBy m_sortBy = SortBy::Name;
-	Tasks m_taskToPerform = Tasks::Filter;
+	SortBy m_sortBy = SortBy::None;
+	Tasks m_taskToPerform = Tasks::None;
 	std::unique_ptr<Manager> m_manager = std::make_unique<Manager>();
 };
 

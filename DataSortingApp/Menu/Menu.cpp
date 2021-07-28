@@ -3,24 +3,21 @@
 
 Menu::Menu()
 {
-	m_manager->read();
+	m_manager->readTerritorialUnitsFromFiles();
 }
 
-void Menu::chooseTasks()
+Tasks Menu::chooseTaskToPerform()
 {
 	int taskToPerform{ 0 };
-	std::wcout << L"Choose which task do you want to perform>" << std::endl;
-	std::wcout << L" 1 - Filter territorial units by criteria" << std::endl;
-	std::wcout << L" 2 - Sort territorial units by criterion" << std::endl;
-	std::wcout << L" 3 - Filter and Sort filtered territorial units" << std::endl;
-	std::wcout << L" Any other number - Close application" << std::endl;
 
-	std::wcout << L" Task: " ;
+	writeTasksMenu();
 	std::wcin >> taskToPerform;
 
 	addSeparator();
 
-	switch (taskToPerform)
+	return m_taskToPerform = mapToTasks(taskToPerform);
+
+	/*switch (taskToPerform)
 	{
 	case 1:
 		m_taskToPerform = Tasks::Filter;
@@ -42,22 +39,15 @@ void Menu::chooseTasks()
 	addSeparator();
 	std::wcout << L"Press enter to continue." << std::endl;
 	std::wcin.get();
-	chooseTasks();
+	chooseTasks();*/
 }
 
-void Menu::chooseFilters()
+void Menu::chooseFiltersToUse()
 {
 	int filterInput{ 1 };
 
 	m_filterNumbers.clear();
-
-	std::wcout << L"Choose which filters you want to apply" << std::endl;
-	std::wcout << L" 1 - Name Filter" << std::endl;
-	std::wcout << L" 2 - Type Filter" << std::endl;
-	std::wcout << L" 3 - Belongs to Filter" << std::endl;
-	std::wcout << L" 4 - Population Filter" << std::endl;
-	std::wcout << L" 5 - Built up rate Filter" << std::endl;
-	std::wcout << L" 0 - Continue" << std::endl;
+	writeFilterMenu();
 
 	while (true)
 	{
@@ -69,36 +59,25 @@ void Menu::chooseFilters()
 		}
 		m_filterNumbers.push_back(filterInput);
 	}
-
-	createFilters();
 }
 
-void Menu::chooseSorting()
+SortBy Menu::chooseSortingProperties()
 {
 	int sortByInput{ 1 };
 	bool ascendingOrder{ true };
 	SortBy sortBy = SortBy::Name;
 
-	std::wcout << L"Choose a sorting criterion: " << std::endl;
-	std::wcout << L" 1 - Sort by name" << std::endl;
-	std::wcout << L" 2 - Sort by population" << std::endl;
-	std::wcout << L" 3 - Sort by built up rate" << std::endl;
-
-	std::wcout << L" Sort by: " ;
+	writeSortMenu();
 	std::wcin >> sortByInput;
 	addSeparator();
 
-	mapToSortBy(sortByInput);
+	sortBy = mapToSortBy(sortByInput);
 
 	requestSortingOrder(ascendingOrder);
 
 	m_manager->setSortParameters(ascendingOrder, sortBy);
-	std::list<std::shared_ptr<ITerritorialUnit>> listToSort = m_manager->chooseTerritorialUnitsToSort(m_taskToPerform);
-	m_manager->sortTerritorialUnits(listToSort);
 
-	m_manager->writeTerritorialUnitsSomeData(listToSort, sortBy);
-
-	m_manager->clearChosenTerritorialUnits();
+	return sortBy;
 }
 
 void Menu::createFilters()
@@ -107,6 +86,8 @@ void Menu::createFilters()
 	int typeNumber{ 0 };
 	unsigned int minPopulation{ 0 }, maxPopulation{ 0 };
 	double builtUpRateMin{ 0.0 }, builtUpRateMax{ 0.0 };
+
+	m_manager->clearChosenFilters();
 
 	for (int i = 0; i < m_filterNumbers.size(); i++)
 	{
@@ -140,15 +121,18 @@ void Menu::createFilters()
 	}
 
 	addSeparator();
-	m_manager->filterTerritorialUnits(m_taskToPerform);
+}
 
-	if (m_taskToPerform == Tasks::Filter)
-	{
-		std::list<std::shared_ptr<ITerritorialUnit>> listToSort = m_manager->chooseTerritorialUnitsToSort(m_taskToPerform);
-		m_manager->writeTerritorialUnitsAllData(listToSort);
-		m_manager->clearChosenTerritorialUnits();
-	}
-	m_manager->clearChosenFilters();
+void Menu::performFiltration()
+{
+	m_manager->clearChosenTerritorialUnits();
+	m_manager->filterTerritorialUnits(m_taskToPerform);
+}
+
+void Menu::performSorting(SortBy sortBy)
+{
+	m_manager->sortTerritorialUnits(getTerritorialUnits());
+
 }
 
 void Menu::requestName(std::wstring& name)
@@ -223,4 +207,68 @@ SortBy Menu::mapToSortBy(int sortByInput)
 	default:
 		return SortBy::None;
 	}
+}
+
+Tasks Menu::mapToTasks(int taskToPerform)
+{
+	switch (taskToPerform)
+	{
+	case 1:
+		return Tasks::Filter;
+	case 2:
+		return Tasks::Sort;
+	case 3:
+		return Tasks::Both;
+	default:
+		return Tasks::None;
+	}
+}
+
+std::list<std::shared_ptr<ITerritorialUnit>>& Menu::getTerritorialUnits()
+{
+	return m_manager->chooseTerritorialUnitsToUse(m_taskToPerform);
+}
+
+void Menu::writeTasksMenu()
+{
+	std::wcout << L"Choose which task do you want to perform>" << std::endl;
+	std::wcout << L" 1 - Filter territorial units by criteria" << std::endl;
+	std::wcout << L" 2 - Sort territorial units by criterion" << std::endl;
+	std::wcout << L" 3 - Filter and Sort filtered territorial units" << std::endl;
+	std::wcout << L" Any other number - Close application" << std::endl;
+
+	std::wcout << L" Task: ";
+}
+
+void Menu::writeFilterMenu()
+{
+	std::wcout << L"Choose which filters you want to apply" << std::endl;
+	std::wcout << L" 1 - Name Filter" << std::endl;
+	std::wcout << L" 2 - Type Filter" << std::endl;
+	std::wcout << L" 3 - Belongs to Filter" << std::endl;
+	std::wcout << L" 4 - Population Filter" << std::endl;
+	std::wcout << L" 5 - Built up rate Filter" << std::endl;
+	std::wcout << L" 0 - Continue" << std::endl;
+}
+
+void Menu::writeSortMenu()
+{
+	std::wcout << L"Choose a sorting criterion: " << std::endl;
+	std::wcout << L" 1 - Sort by name" << std::endl;
+	std::wcout << L" 2 - Sort by population" << std::endl;
+	std::wcout << L" 3 - Sort by built up rate" << std::endl;
+
+	std::wcout << L" Sort by: ";
+}
+
+void Menu::writeFilteredResults()
+{
+	m_manager->writeTerritorialUnitsAllData(getTerritorialUnits());
+	
+	m_manager->clearChosenTerritorialUnits();
+}
+
+void Menu::writeSortedResults(SortBy sortBy)
+{
+	m_manager->writeTerritorialUnitsSomeData(getTerritorialUnits(), sortBy);
 }

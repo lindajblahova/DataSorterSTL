@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <Windows.h>
 
-void Manager::read()
+void Manager::readTerritorialUnitsFromFiles()
 {
 	std::wstring name, commune, district, region;
 	unsigned int preProd{ 0 }, prod{ 0 }, postProd{0};
@@ -98,10 +98,10 @@ void Manager::read()
 	
 }
 
-void Manager::writeTerritorialUnitsAllData(const std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite)
+void Manager::writeTerritorialUnitsAllData(const std::list<std::shared_ptr<ITerritorialUnit>>& territorialUnitsToWrite)
 {
-	std::unique_ptr<ICriterion> criteria = std::make_unique<Criterion>();
-	for (auto const& i : listToWrite) {
+	std::unique_ptr<ICriterion> criterion = std::make_unique<Criterion>();
+	for (auto const& i : territorialUnitsToWrite) {
 		
 		std::shared_ptr<ITerritorialUnit> territorialUnitTMP = i;
 		changeColor(11);
@@ -110,38 +110,38 @@ void Manager::writeTerritorialUnitsAllData(const std::list<std::shared_ptr<ITerr
 			territorialUnitTMP = territorialUnitTMP->getParent();
 			std::wcout << (territorialUnitTMP->getType() == TerritorialUnitType::District ? L" | District: "  : 
 				(territorialUnitTMP->getType() == TerritorialUnitType::Region ? L" | Region: " : L" | State: "))
-				<< criteria->name(territorialUnitTMP) ;
+				<< criterion->name(territorialUnitTMP) ;
 		}
 		std::wcout << std::endl;
 
 		changeColor(14);
-		std::wcout << L" | Territorial unit: " << criteria->name(i);
+		std::wcout << L" | Territorial unit: " << criterion->name(i);
 		changeColor(6);
-		std::wcout << L" | Population: " << criteria->population(i);
+		std::wcout << L" | Population: " << criterion->population(i);
 		changeColor(4);
-		std::wcout << L" | Preproductive: " << criteria->preProductive(i);
+		std::wcout << L" | Preproductive: " << criterion->preProductive(i);
 		changeColor(2);
-		std::wcout << L" | Productive: " << criteria->productive(i);
+		std::wcout << L" | Productive: " << criterion->productive(i);
 		changeColor(3);
-		std::wcout << L" | PostProductive: " << criteria->postProductive(i);
+		std::wcout << L" | PostProductive: " << criterion->postProductive(i);
 		changeColor(8);
-		wprintf(L" | Total Area: %.2f km²", (criteria->totalArea(i) / 1000.0));        // TODO inak ? 
+		wprintf(L" | Total Area: %.2f km²", (criterion->totalArea(i) / 1000.0));        // TODO inak ? 
 		changeColor(15);
-		wprintf(L" | Built up area: %.2f km²", (criteria->builtUpArea(i) / 1000.0));
+		wprintf(L" | Built up area: %.2f km²", (criterion->builtUpArea(i) / 1000.0));
 		changeColor(10);
-		wprintf(L" | Built up rate: %.2f", criteria->builtUpRate(i));
+		wprintf(L" | Built up rate: %.2f", criterion->builtUpRate(i));
 		std::wcout << L"%" << std::endl << std::endl;
 	}
 	changeColor(7);
 }
 
-void Manager::writeTerritorialUnitsSomeData(const std::list<std::shared_ptr<ITerritorialUnit>>& listToWrite, SortBy sortBy)
+void Manager::writeTerritorialUnitsSomeData(const std::list<std::shared_ptr<ITerritorialUnit>>& territorialUnitsToWrite, SortBy sortBy)
 {
-	std::unique_ptr<ICriterion> criteria = std::make_unique<Criterion>();
-	for (auto const& i : listToWrite) {
+	std::unique_ptr<ICriterion> criterion = std::make_unique<Criterion>();
+	for (auto const& i : territorialUnitsToWrite) {
 
 		changeColor(14);
-		std::wcout << L" | Territorial unit: " << criteria->name(i);
+		std::wcout << L" | Territorial unit: " << criterion->name(i);
 
 		switch (sortBy)
 		{
@@ -150,11 +150,11 @@ void Manager::writeTerritorialUnitsSomeData(const std::list<std::shared_ptr<ITer
 			break;
 		case SortBy::Population:
 			changeColor(6);
-			std::wcout << L" | Population: " << criteria->population(i) << std::endl;
+			std::wcout << L" | Population: " << criterion->population(i) << std::endl << std::endl;
 			break;
 		case SortBy::BuiltUpRate:
 			changeColor(10);
-			wprintf(L" | Built up rate: %.2f", criteria->builtUpRate(i));
+			wprintf(L" | Built up rate: %.2f", criterion->builtUpRate(i));
 			std::wcout << L"%" << std::endl << std::endl;
 			break;
 		default:
@@ -180,7 +180,6 @@ void Manager::clearAllTerritorialUnits()
 {
 	m_territorialUnits.clear();
 }
-
 
 void Manager::addFilterName(const std::wstring& name)
 {
@@ -245,22 +244,20 @@ void Manager::setSortParameters(bool inAscendingOrder, SortBy sortBy)
 	m_comparator->setOrder(inAscendingOrder);
 }
 
-std::list<std::shared_ptr<ITerritorialUnit>>& Manager::chooseTerritorialUnitsToSort(Tasks taskToPerform)
+std::list<std::shared_ptr<ITerritorialUnit>>& Manager::chooseTerritorialUnitsToUse(Tasks taskToPerform)
 {
 	switch (taskToPerform)
 	{
 	case Tasks::Sort:
 		return m_territorialUnits;
-		break;
 	default:
 		return m_chosenTerritorialUnits;
-		break;
 	}
 }
 
-void Manager::sortTerritorialUnits(std::list<std::shared_ptr<ITerritorialUnit>>& listToSort)
+void Manager::sortTerritorialUnits(std::list<std::shared_ptr<ITerritorialUnit>>& territorialUnitsToSort)
 {
-	listToSort.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
+	territorialUnitsToSort.sort([this](const std::shared_ptr<ITerritorialUnit>& territorialUnit1, const std::shared_ptr<ITerritorialUnit>& territorialUnit2)
 		{ 
 			return m_comparator->compare(territorialUnit1, territorialUnit2);
 		});
